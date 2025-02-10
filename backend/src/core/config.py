@@ -46,15 +46,19 @@ class Settings(BaseSettings):
             self.FRONTEND_HOST
         ]
 
-    POSTGRES_SERVER: str
+    POSTGRES_SERVER: str = ""
     POSTGRES_PORT: int = 5432
-    POSTGRES_USER: str
+    POSTGRES_USER: str = ""
     POSTGRES_PASSWORD: str = ""
     POSTGRES_DB: str = ""
+    DATABASE_URL: str = ""
 
     @computed_field  # type: ignore[prop-decorator]
     @property
-    def SQLALCHEMY_DATABASE_URI(self) -> PostgresDsn:
+    def SQLALCHEMY_DATABASE_URI(self) -> PostgresDsn | str:
+        if self.DATABASE_URL:
+            return self.DATABASE_URL
+
         return MultiHostUrl.build(
             scheme="postgresql+psycopg",
             username=self.POSTGRES_USER,
