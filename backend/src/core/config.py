@@ -57,7 +57,7 @@ class Settings(BaseSettings):
     @property
     def SQLALCHEMY_DATABASE_URI(self) -> PostgresDsn | str:
         if self.DATABASE_URL:
-            return self.DATABASE_URL
+            return self.DATABASE_URL.replace("postgres://", "postgresql+psycopg2://", 1)
 
         return MultiHostUrl.build(
             scheme="postgresql+psycopg",
